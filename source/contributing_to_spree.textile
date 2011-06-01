@@ -80,125 +80,62 @@ NOTE: You need to include a brief description of the problem and simple steps ne
 
 h3. Creating a Pull Request
 
+If you are going to contribute code to the Spree project, the best mechanism for doing this is to create a pull request in Github.  If you're unfamiliar with the general concept of pull requests you may want to read more on "pull requests in Github":http://help.github.com/pull-requests/.
+
+NOTE: If your code is associated with an existing issue then you can "provide a patch":#providing-a-patch instead of creating a pull request.
+
+h4. Creating a Fork
+
+The official Spree source code is maintained in Github under the "spree/spree":http://github.com/spree/spree project. There is a "core team":http://spreecommerce.com/core_team of developers who are responsible for maintaining the quality of the source code. Your changes will ultimately need to be merged into the official project by a core member.
+
+Thanks to "Github":http://github.com, however, you do not have to wait for a core member to get started with your fix.  You simply need to "fork" the project and then start hacking.
+
+INFO: See the Github guide on "creating forks":http://help.github.com/fork-a-repo/ for more details.
+
 h4. Topic Branches
 
-h4. Rebasing your Branch
+Git branches are “cheap.” Creating branches in Git is incredibly easy and its an ideal way to isolate a specific set of changes. You may be fixing several things at one time but by keeping your changes isolated it will help us to find and apply only the changes we’re interested in. You should create a clean branch based on the latest spree/master when doing this. It is important you follow these steps exactly, it will prevent you from accidentally including unrelated changes from your local repository into the branch.
+
+For example, if we were submitting a patch to fix an issue with the CSS in the flash error message you could create a branch as follows:
+
+<shell>
+$ git remote add upstream git://github.com/spree/spree.git
+$ git fetch upstream
+$ git checkout -b fix-css-for-error-flash --track upstream/master
+</shell>
+
+The fetch command will grab all of the latest commits from the Spree master branch. Don’t worry, it doesn’t alter your working repository in a harmful way.  The track part of the command will tell git that this branch should track with the remote version of the upstream master.  This is another way of saying that the branch should be based on a clean copy of the latest official source code (without any of your unrelated local changes.)
+
+You can then do work locally on this topic branch and push it up to your Github fork when you are done.  So in our previous example we do something like:
+
+<shell>
+$ git push origin fix-css-for-error-flash
+</shell>
+
+Of course if you want the fix for yourself to use in your own local code you should probably merge it down to your own personal master branch that you're using for development
+
+<shell>
+$ git checkout master
+$ git merge fix-css-for-error-flash
+</shell>
+
+You should probably also clean up after yourself a little.  The branch has been pushed to Github and you've merged it locally so you don't really need a local copy of the branch laying around.
+
+<shell>
+$ git branch -D fix-css-for-error-flash
+</shell>
 
 h4. Including a Test
 
-h4. Helpful Commit Messages
+Ideally your pull request will also include a test that verifies a bug (or the absence of the new feature) before your fix and also verifies proper functionality when you are finished.  Please read the "Testing Guide":testing.html for more information on writing and running your tests.
 
-h3. Contributing to the Guides
+INFO: Pull requests with tests are given top priority.  Failure to include a test will likely delay acceptance of your patch.
 
-h3. Extensions
+h4. Creating the Pull Request
 
-Creating your own extension or making improvements to existing extensions is strongly encouraged.  Please see the "Extension Guide":extensions.html for more details on how to contribute through extensions.
+Once your code is ready to go and you have pushed your "topic branch":#topic-branches to Github then you are ready to create the pull request and notify the Spree team that your contribution is ready.  You do this by browsing your project in Github and changing to the topic branch you just pushed.  Once you are on the topic branch simply create a pull request by pressing the "Pull Request" button.
 
-h3. Contributing to the Core
-
-The core is the basic foundation of the Spree project.  It is maintained in Github under the "spree/spree":http://github.com/spree/spree/tree/master project.  There is a "core team":http://spreecommerce.com/core_team of developers who are responsible for maintaining the quality of the source code.  Your changes will ultimately need to be merged into the official project by a core member.  Thanks to "Github":http://github.com, however, you do not have to wait for a core member to get started with your fix.
-
-h4. One Time Steps
-
-Please perform the following one time steps for your fork in Github.
-
-h5. Create a Remote Reference in Git to Railsdog
-
-You will need to create a fork of the Spree project in Github.  This is a pretty self explanatory process.  After you have done this and cloned your repository you will need to add a reference to the official repository (railsdog).
-
-<shell>
-git remote add railsdog git://github.com/spree/spree.git
-</shell>
-
-WARNING: Its important that you add this reference.  Its a one time step that will allow you to easily create branches based on the most recent version of the official code.
-
-h4. For Each Contribution
-
-h5. Create a Ticket in Lighthouse
-
-The Spree development team is using "Light House":http://railsdog.lighthouseapp.com/projects/31096-spree/overview for tracking all issue and feature requests. Use it to browse the existing tickets or to submit a new issue.  All changes to the core should flow through this system. Please file an issue before you commit your code so that you can then reference the issue number in your commit.  We get a high volume of contributions, so taking a second to create the LH issue helps us to keep track of your bug reports and fixes so that they do not get lost in the shuffle.
-
-WARNING: Do not submit pull requests in Github.  Do not send bug reports to the spree-user list.  In both cases you will be politely asked to file an issue in Lighthouse.  We need to deal with these matters in the most efficient way possible - we're not trying to be difficult.
-
-h5. Create a Clean Branch for Each Issue
-
-Git branches are "cheap."  Creating branches in Git is incredibly easy and its an ideal way to isolate a specific set of changes.  You may be fixing several things at one time but by keeping your changes isolated it will help us to find and apply only the changes we're interested in.  You should create a clean branch based on the latest +railsdog/master+ when doing this.  It is important you follow these steps exactly, it will prevent you from accidentally including unrelated changes from your local copy into the branch.
-
-For example, if we were submitting a patch to issue #525 which provided thai localization we would create the branch as follows:
-
-<shell>
-git fetch railsdog
-git checkout -b 525-add-thai-localization --track railsdog/master
-</shell>
-
-The +fetch+ command will grab all of the latest commits on railsdog.  Don't worry, it doesn't merge them into your current branch or anything.  This is just making sure that you have a complete copy of the railsdog source.  The commits will be stored behind the scenes, your local code will remain as it was.
-
-The +track+ part of the command will tell git that this branch should track with the remote version of railsdog master.  This is another way of saying that the branch should be based on a clean copy of the latest source code.
-
-h5. Add the Issue Number to Your Commits
-
-When you're ready to commit be sure to add the issue number in your commit message.  It is suggested that you just use +git commit+ without the +-m+ option.  This will allow you to view the commit message in your editor and add some line spacing for readability.  Here's an example of a commit message.
-
-<shell>
-Provided a Thai localization.
-
-[#525]
-</shell>
-
-Please be sure to include the issue number inside of brackets.  This will make sure that Lighthouse will be notified of the changeset when you push to Github.  It will also automatically change the ticket state to "patched" which will help us to prioritize issues where users have supplied a fix.  Note also the blank line between the comment and the issue number.  This helps with readability.
-
-WARN. Lighthouse will not be notified of the fix automatically due to some technical problems with the hook.  Please continue to use this notation since the style will be compatible with the eventual new solution to this problem.
-
-h5. Rebase if Necessary
-
-If you've been working on your fix for more than a few hours there is a good chance that you will need to rebase.  Git's rebase command is one of those scary sounding things that really isn't all that bad "once you understand it":http://www.gitready.com/intermediate/2009/01/31/intro-to-rebase.html.
-
-So you can check to see if there have been any chances to railsdog since you created your branch.
-
-<shell>
-  git fetch railsdog
-</shell>
-
-If nothing comes back, then +railsdog/master+ is unchanged and there's nothing to do.  If you see a bunch of commits coming down, however, then its time to rebase.  Run the following command from your "issue branch" which you should still be on.
-
-<shell>
-  git rebase railsdog/master
-</shell>
-
-If you're lucky the command will run without incident.  If there are conflicts, you can resolve them manually (better you then us) and continue the rebase operation (+git rebase --continue).
-
-h5. Push to a Remote Branch in Github
-
-Now all you have to do is push your changes to a remote branch in Git Hub.
-
-<shell>
-git push origin 525-add-thai-localization
-</shell>
-
-If you have set up the GitHub service hook as described earlier, the changes will automatically be reflected in the Lighthouse ticket once you push.
-
-WARNING: In previous versions of this guide we encouraged you to create a "service hook" for your fork in Github.  Unfortunately we are expereincing technical problems processing these commit messages.  We're working on a new solution that will automatically detect your fixes in Github when using the proper notation in your commits.
-
-h5. Merge to Your Local Master and Push
-
-The final step is to make sure these changes are merged back into your own master branch.  This way they are available to you alongside your other changes that may or may not be slated to be merged into the core.
-
-So continuing with our previous example you should then do:
-
-<shell>
-  git checkout master
-  git merge 525-add-thai-localization
-  git push origin master
-</shell>
-
-h5. Summary of Contribution Steps
-
-# Create a ticket in Lighthouse
-# Create a branch for each ticket
-# Note the ticket # in your commit
-# Rebase against the latest railsdog/master
-# Push the commit to your remote branch
-# Merge the commit to your master and push to Github
+INFO: The Github guide on "pull requests":http://help.github.com/pull-requests/ describes this in more detail with screenshots if you're still confused on this part.
 
 h3. Contributing to the Documentation
 
@@ -208,14 +145,12 @@ Improvements to the documentation is encouraged.  The primary source of document
   $ git clone git://github.com/spree/spree-guides.git
   $ cd spree-guides
   $ bundle install
-  $ rake guides
+  $ guides build
 </shell>
-
-INFO: You will also need to install the RedCloth gem (4.1.1 or greater) if you do not done so.
 
 You do not need to fork the spree-guides project in order to contribute.  Just send an email to "spree-user":http://groups.google.com/group/spree-user (be sure to include your github username) and say that you would like to contribute.  We'll add you to the list so you can commit directly to the guides project.
 
-INFO: If you're uncomfortable using Git, etc. you can report a mistake in the Spree guides using Github's built in "issue tracker":http://github.com/spree/spree-guides/issues.  Please do **not** report issues with the documentation in the Lighthouse ticket system which is reserved for reporting bugs in the code.
+NOTE: The guides are generated using Yehuda Katz's convenient guides gem.  It is an abstraction of the process used to create the official guides for Ruby on Rails.
 
 WARNING: Please be considerate when making changes to the spree-guides.  If you wish to make major changes to how the documentation is organized then you should use a GitHub fork and ask people to review your proposed changes instead.
 
